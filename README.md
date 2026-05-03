@@ -34,6 +34,8 @@ flowchart LR
   P --> D
   P --> G
 
+---
+
 ## 📈 Business Insights
 
 ### 💰 Revenue & Seasonality
