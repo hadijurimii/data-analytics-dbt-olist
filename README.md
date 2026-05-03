@@ -21,19 +21,8 @@ Instead of overengineering, the focus is on:
 
 ## 🧱 Architecture
 
-```mermaid
-flowchart LR
-  A[Raw CSV Data] --> B[Python Ingestion]
-  H[Public Holiday API] --> B
-  B --> C[DuckDB Warehouse]
-  C --> D[dbt Staging]
-  D --> E[dbt Intermediate]
-  E --> F[dbt Marts]
-  F --> G[Analytics Outputs]
-  P[Prefect Flow] --> B
-  P --> D
-  P --> G
-```mermaid
+<img width="2948" height="540" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/9dcd8f6b-9b3d-425a-b386-169388c13527" />
+
 ---
 
 ## 📈 Business Insights
