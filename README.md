@@ -33,7 +33,7 @@ flowchart LR
   P[Prefect Flow] --> B
   P --> D
   P --> G
-
+```mermaid
 ---
 
 ## 📈 Business Insights
