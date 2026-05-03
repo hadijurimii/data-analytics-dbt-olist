@@ -1,110 +1,104 @@
-# 🚀 Lance Data Engineering Project  
-**End-to-End Analytics Pipeline on Olist E-commerce Dataset**
+# 🚀 Lance Data Olist Analytics Stack
 
----
+Local, production-shaped analytics stack for the Lance Data Forward Deployed Data Engineer technical test. It ingests the Olist Brazilian e-commerce CSVs plus Brazilian public holidays, loads DuckDB, transforms with dbt, orchestrates with Prefect, and exports analysis for the required business questions.
 
-## 🌟 Overview
+## 🌟 Quick start
 
-This project builds a **production-style data platform (locally!)** to analyze the Olist Brazilian e-commerce dataset.
+1. Install dependencies:
 
-Instead of overengineering, the focus is on:
-- ✅ Clean architecture  
-- ✅ Reproducibility  
-- ✅ Business-driven insights  
-- ✅ Interview-ready explanations  
+```bash
+uv sync --group dev
+```
 
-💡 *Think of this as a “mini data platform” you can confidently defend in front of senior engineers.*
+2. Download the Olist dataset into `data/raw`:
 
----
+```bash
+uv run kaggle datasets download -d olistbr/brazilian-ecommerce -p data/raw --unzip
+```
 
-## 🧱 Architecture
+3. Run the full local pipeline:
 
-<img width="2948" height="540" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/9dcd8f6b-9b3d-425a-b386-169388c13527" />
+```bash
+uv run python scripts/flow.py
+```
 
----
+Or run through Docker Compose:
 
-## 📈 Business Insights
+```bash
+docker compose up --build pipeline
+```
 
-### 💰 Revenue & Seasonality
+## 🧱 What the pipeline does
 
-- Strong revenue growth observed in **health_beauty** and **watches_gifts** categories  
-- Monthly GMV trends show consistent upward momentum with occasional spikes  
-- Anomaly detection (z-score) highlights unusual peaks in specific categories  
+```mermaid
+flowchart LR
+  A[Olist CSVs] --> B[Python ingestion]
+  H[Nager.Date BR holidays] --> B
+  B --> C[(DuckDB)]
+  C --> D[dbt staging]
+  D --> E[dbt intermediate]
+  E --> F[dbt marts]
+  F --> G[CSV outputs + report.md]
+  P[Prefect flow] --> B
+  P --> D
+  P --> G
+```
 
-💡 **Key Insight:**  
-Public holidays alone do **not strongly explain revenue spikes**.  
-Promotions, campaigns, and marketplace dynamics are more likely drivers.
+The main orchestration entrypoint is `scripts/flow.py`:
 
----
+1. `scripts/ingest.py` loads raw Olist CSVs and Brazilian public holidays into `data/warehouse/olist.duckdb`.
+2. `dbt run --profiles-dir .` builds staging, intermediate, and mart models.
+3. `dbt test --profiles-dir .` validates key non-null and uniqueness assumptions.
+4. `scripts/export_analysis.py` exports result CSVs and refreshes `report.md`.
 
-### 🔁 Customer Retention
+## 💡 Project structure
 
-- Overall repeat purchase rate (within 90 days) is **low (~1–1.6%)**
-- Indicates a **transactional marketplace behavior** with many one-time buyers  
-- States with relatively higher retention:
-  - ES  
-  - MT  
-  - SP  
+| Path | Purpose |
+|---|---|
+| `scripts/ingest.py` | Idempotent raw ingestion into DuckDB. |
+| `scripts/flow.py` | Prefect orchestration for the whole pipeline. |
+| `scripts/export_analysis.py` | Business-question SQL exports and report generation. |
+| `models/staging` | Light type cleanup and source normalization. |
+| `models/intermediate` | Business-grain order, item, and customer sequence facts. |
+| `models/marts` | Final analytical marts for the five questions. |
+| `docs/architecture.md` | Mermaid architecture diagram. |
+| `docs/erd.md` | Mermaid ERD. |
+| `docs/demo_script.md` | Interview/demo walkthrough. |
+| `docs/change_requests.md` | Likely interview change requests and responses. |
+| `summary.md` | Short project summary and architecture. |
+| `report.md` | Detailed presentation reference with result tables. |
+| `progress.md` | Implementation progress log. |
+| `output/*.csv` | Generated analysis outputs. |
 
-💡 **Key Insight:**  
-Retention is not evenly distributed across regions.
+## 🌍 Business questions answered
 
----
+1. Revenue and seasonality: monthly GMV by product category, YoY growth, anomaly months, and holiday context.
+2. Customer cohort and repeat behaviour: first-purchase cohorts, second purchase within 90 days, by customer state.
+3. Delivery performance vs review score: on-time delivery, same-state/cross-state shipments, category segmentation, and investigation recommendation.
+4. Proposed question: payment method mix and installment behaviour.
+5. Proposed question: customer value by Brazilian state.
 
-### 🚚 Delivery vs Customer Satisfaction
+See `report.md` for the detailed answer tables and interpretation.
 
-- Late deliveries strongly correlate with **low review scores**
-- Worst-performing segments:
-  - Cross-state shipments  
-  - High-volume categories like *toys, baby, stationery*  
+## 💳 Verification status
 
-- Late deliveries often exceed **8–11 days delay**, significantly impacting satisfaction  
+The pipeline was run locally on 2026-05-02:
 
-💡 **Key Insight:**  
-Delivery performance is a **critical driver of customer experience**
+- Raw ingestion: 10 tables loaded.
+- dbt run: 18 models built successfully.
+- dbt test: 19 tests passed.
+- Prefect flow: completed successfully.
+- Analysis exports: 7 CSV outputs generated.
 
----
+## 🔁 Design choices
 
-### 💳 Payment Behavior
+- **DuckDB**: ideal for a local analytics test, simple file-based deployment, fast enough for the Olist dataset.
+- **dbt**: makes SQL transformations reviewable, layered, tested, and easy to explain.
+- **Prefect**: lightweight orchestration without running a heavy Airflow/Dagster service.
+- **Docker Compose**: proves reproducibility while keeping the stack local.
+- **Public holidays enrichment**: directly supports the seasonality question without adding irrelevant complexity.
 
-- **Credit card** is the dominant payment method, contributing the majority of total transaction value  
-- Customers frequently use **installments**, with an average of ~3.5 payments per order  
-- **Boleto** (bank transfer) is the second most used method but limited to single payments  
-- **Voucher** and **debit card** usage remain relatively low  
+## 💡 AI disclosure
 
-💡 **Key Insight:**  
-Brazilian e-commerce shows strong reliance on **credit-based purchasing with installments**
+AI assistance was used to scaffold and implement the project quickly: ingestion code, dbt models, orchestration, documentation, and report generation. The pipeline was executed locally and dbt tests passed. The parts that deserve human review before final submission are the business interpretation wording in `report.md` and whether the simple z-score anomaly method is sufficient for the expected interview depth.
 
----
-
-### 🌍 Customer Value by Region
-
-- Customer value varies significantly across different states  
-- High-value states include:
-  - PB  
-  - PA  
-  - MT  
-
-- Larger states (e.g., SP, RJ) generate high total GMV but not necessarily the highest **per-customer value**  
-
-💡 **Key Insight:**  
-High transaction volume ≠ high customer value  
-
----
-
-## 📦 Outputs
-
-The pipeline generates the following analytical outputs:
-
-- `output/q1_top_monthly_category_gmv.csv`  
-- `output/q1_anomaly_months.csv`  
-- `output/q2_best_repeat_states.csv`  
-- `output/q2_recent_cohorts.csv`  
-- `output/q3_delivery_review_segments.csv`  
-- `output/q4_payment_mix.csv`  
-- `output/q5_customer_ltv_state.csv`  
-
-💡 These outputs are designed to be:
-- Easily consumable for analysis  
-- Ready for dashboards or reporting  
-- Structured for business decision-making  
