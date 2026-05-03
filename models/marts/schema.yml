@@ -1,0 +1,22 @@
+version: 2
+models:
+  - name: mart_monthly_category_gmv
+    description: Monthly product-category GMV, YoY growth, and anomaly/holiday indicators.
+    columns:
+      - name: order_month
+        tests: [not_null]
+      - name: product_category
+        tests: [not_null]
+  - name: mart_customer_cohorts_state
+    description: Cohort repeat-purchase behavior by first-purchase month and customer state.
+    columns:
+      - name: cohort_month
+        tests: [not_null]
+      - name: customer_state
+        tests: [not_null]
+  - name: mart_delivery_review_segmentation
+    description: Delivery timeliness and review score by category and same-state/cross-state scope.
+  - name: mart_payment_mix_monthly
+    description: Monthly payment mix and installment behavior.
+  - name: mart_customer_ltv_state
+    description: Customer value and repeat behavior by Brazilian customer state.

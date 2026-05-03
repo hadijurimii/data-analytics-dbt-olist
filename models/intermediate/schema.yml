@@ -1,0 +1,17 @@
+version: 2
+models:
+  - name: int_order_enriched
+    description: Delivered order-level facts with customer, payment, review, and holiday context.
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+  - name: int_order_items_enriched
+    description: Delivered item-level facts with category, seller/customer state, review, and holiday context.
+    columns:
+      - name: order_id
+        tests: [not_null]
+  - name: int_customer_orders
+    description: Customer order sequence facts used for cohort and repeat-purchase analysis.
+    columns:
+      - name: customer_unique_id
+        tests: [not_null]
