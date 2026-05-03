@@ -1,5 +1,3 @@
-# data-analytics-dbt-olist
-
 # 🚀 Lance Data Engineering Project  
 **End-to-End Analytics Pipeline on Olist E-commerce Dataset**
 
@@ -51,10 +49,6 @@ Promotions, campaigns, and marketplace dynamics are more likely drivers.
 💡 **Key Insight:**  
 Retention is not evenly distributed across regions.
 
-👉 **Recommendation:**
-- Segment customers by region  
-- Focus retention strategies (loyalty, re-engagement campaigns) on high-potential states  
-
 ---
 
 ### 🚚 Delivery vs Customer Satisfaction
@@ -69,10 +63,7 @@ Retention is not evenly distributed across regions.
 💡 **Key Insight:**  
 Delivery performance is a **critical driver of customer experience**
 
-👉 **Recommendation:**
-- Improve logistics for cross-state deliveries  
-- Optimize seller dispatch times  
-- Set realistic delivery expectations for customers
+---
 
 ### 💳 Payment Behavior
 
@@ -83,11 +74,6 @@ Delivery performance is a **critical driver of customer experience**
 
 💡 **Key Insight:**  
 Brazilian e-commerce shows strong reliance on **credit-based purchasing with installments**
-
-👉 **Recommendation:**
-- Optimize checkout experience for credit card users  
-- Consider installment-based promotions to increase conversion rates  
-- Monitor financial exposure related to delayed payments  
 
 ---
 
@@ -103,11 +89,6 @@ Brazilian e-commerce shows strong reliance on **credit-based purchasing with ins
 
 💡 **Key Insight:**  
 High transaction volume ≠ high customer value  
-
-👉 **Recommendation:**
-- Focus marketing and acquisition strategies on **high-value regions**  
-- Tailor campaigns based on regional purchasing behavior  
-- Support seller expansion in profitable regions  
 
 ---
 
