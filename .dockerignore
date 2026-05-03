@@ -1,0 +1,9 @@
+.venv/
+.git/
+target/
+dbt_packages/
+logs/
+__pycache__/
+*.pyc
+data/warehouse/*.duckdb
+data/warehouse/*.duckdb.*
