@@ -1,0 +1,8 @@
+lance_data:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: data/warehouse/olist.duckdb
+      threads: 4
+      schema: main

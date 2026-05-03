@@ -1,0 +1,15 @@
+services:
+  pipeline:
+    build: .
+    working_dir: /app
+    environment:
+      PREFECT_HOME: /tmp/prefect
+      PREFECT_API_DATABASE_CONNECTION_URL: sqlite+aiosqlite:////tmp/prefect/prefect.db
+      PREFECT_SERVER_EPHEMERAL_STARTUP_TIMEOUT_SECONDS: "60"
+      PREFECT_SERVER_ANALYTICS_ENABLED: "false"
+      PREFECT_CLIENT_CSRF_SUPPORT_ENABLED: "false"
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./reports:/app/reports
+    command: uv run --no-dev python scripts/flow.py
